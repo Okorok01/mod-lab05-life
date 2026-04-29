@@ -1,131 +1,445 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Text.Json;
 using System.Threading;
+using ScottPlot;
 
-namespace cli_life
+namespace Life
 {
     public class Cell
     {
-        public bool IsAlive;
-        public readonly List<Cell> neighbors = new List<Cell>();
-        private bool IsAliveNext;
-        public void DetermineNextLiveState()
+        public bool IsAlive { get; set; }
+        public int X { get; set; }
+        public int Y { get; set; }
+
+        public Cell(int x, int y, bool alive = false)
         {
-            int liveNeighbors = neighbors.Where(x => x.IsAlive).Count();
-            if (IsAlive)
-                IsAliveNext = liveNeighbors == 2 || liveNeighbors == 3;
-            else
-                IsAliveNext = liveNeighbors == 3;
-        }
-        public void Advance()
-        {
-            IsAlive = IsAliveNext;
+            X = x;
+            Y = y;
+            IsAlive = alive;
         }
     }
     public class Board
     {
-        public readonly Cell[,] Cells;
-        public readonly int CellSize;
+        public int Width { get; private set; }
+        public int Height { get; private set; }
+        private bool[,] grid;
 
-        public int Columns { get { return Cells.GetLength(0); } }
-        public int Rows { get { return Cells.GetLength(1); } }
-        public int Width { get { return Columns * CellSize; } }
-        public int Height { get { return Rows * CellSize; } }
-
-        public Board(int width, int height, int cellSize, double liveDensity = .1)
+        public Board(int width, int height)
         {
-            CellSize = cellSize;
-
-            Cells = new Cell[width / cellSize, height / cellSize];
-            for (int x = 0; x < Columns; x++)
-                for (int y = 0; y < Rows; y++)
-                    Cells[x, y] = new Cell();
-
-            ConnectNeighbors();
-            Randomize(liveDensity);
+            Width = width;
+            Height = height;
+            grid = new bool[width, height];
         }
 
-        readonly Random rand = new Random();
-        public void Randomize(double liveDensity)
+        public void Clear() => Array.Clear(grid, 0, grid.Length);
+        public bool IsAlive(int x, int y) => grid[x, y];
+        public void SetCell(int x, int y, bool alive) => grid[x, y] = alive;
+        public void Randomize(double density, Random rand = null)
         {
-            foreach (var cell in Cells)
-                cell.IsAlive = rand.NextDouble() < liveDensity;
+            if (rand == null) rand = new Random();
+            for (int i = 0; i < Width; i++)
+                for (int j = 0; j < Height; j++)
+                    grid[i, j] = rand.NextDouble() < density;
         }
-
-        public void Advance()
+        public int GetNeighborsCount(int x, int y)
         {
-            foreach (var cell in Cells)
-                cell.DetermineNextLiveState();
-            foreach (var cell in Cells)
-                cell.Advance();
-        }
-        private void ConnectNeighbors()
-        {
-            for (int x = 0; x < Columns; x++)
-            {
-                for (int y = 0; y < Rows; y++)
+            int count = 0;
+            for (int dx = -1; dx <= 1; dx++)
+                for (int dy = -1; dy <= 1; dy++)
                 {
-                    int xL = (x > 0) ? x - 1 : Columns - 1;
-                    int xR = (x < Columns - 1) ? x + 1 : 0;
-
-                    int yT = (y > 0) ? y - 1 : Rows - 1;
-                    int yB = (y < Rows - 1) ? y + 1 : 0;
-
-                    Cells[x, y].neighbors.Add(Cells[xL, yT]);
-                    Cells[x, y].neighbors.Add(Cells[x, yT]);
-                    Cells[x, y].neighbors.Add(Cells[xR, yT]);
-                    Cells[x, y].neighbors.Add(Cells[xL, y]);
-                    Cells[x, y].neighbors.Add(Cells[xR, y]);
-                    Cells[x, y].neighbors.Add(Cells[xL, yB]);
-                    Cells[x, y].neighbors.Add(Cells[x, yB]);
-                    Cells[x, y].neighbors.Add(Cells[xR, yB]);
+                    if (dx == 0 && dy == 0) continue;
+                    int nx = x + dx, ny = y + dy;
+                    if (nx >= 0 && nx < Width && ny >= 0 && ny < Height && grid[nx, ny])
+                        count++;
                 }
+            return count;
+        }
+        public void NextGeneration()
+        {
+            var newGrid = new bool[Width, Height];
+            for (int i = 0; i < Width; i++)
+                for (int j = 0; j < Height; j++)
+                {
+                    int neighbors = GetNeighborsCount(i, j);
+                    bool alive = grid[i, j];
+                    if (alive)
+                        newGrid[i, j] = (neighbors == 2 || neighbors == 3);
+                    else
+                        newGrid[i, j] = (neighbors == 3);
+                }
+            grid = newGrid;
+        }
+        public int GetAliveCount()
+        {
+            int count = 0;
+            for (int i = 0; i < Width; i++)
+                for (int j = 0; j < Height; j++)
+                    if (grid[i, j]) count++;
+            return count;
+        }
+        public List<(int x, int y)> GetAliveCells()
+        {
+            var list = new List<(int, int)>();
+            for (int i = 0; i < Width; i++)
+                for (int j = 0; j < Height; j++)
+                    if (grid[i, j]) list.Add((i, j));
+            return list;
+        }
+        public void SaveToFile(string filename)
+        {
+            var cells = GetAliveCells();
+            using var writer = new StreamWriter(filename);
+            writer.WriteLine($"{Width} {Height}");
+            foreach (var (x, y) in cells)
+                writer.WriteLine($"{x} {y}");
+        }
+        public void LoadFromFile(string filename)
+        {
+            if (!File.Exists(filename)) throw new FileNotFoundException();
+            var lines = File.ReadAllLines(filename);
+            var dims = lines[0].Split();
+            int w = int.Parse(dims[0]), h = int.Parse(dims[1]);
+            if (w != Width || h != Height) throw new InvalidOperationException("Размер поля не совпадает");
+            Clear();
+            for (int i = 1; i < lines.Length; i++)
+            {
+                var coords = lines[i].Split();
+                int x = int.Parse(coords[0]), y = int.Parse(coords[1]);
+                if (x >= 0 && x < Width && y >= 0 && y < Height)
+                    grid[x, y] = true;
             }
+        }
+        public List<List<(int x, int y)>> FindClusters()
+        {
+            var visited = new bool[Width, Height];
+            var clusters = new List<List<(int, int)>>();
+            for (int i = 0; i < Width; i++)
+                for (int j = 0; j < Height; j++)
+                {
+                    if (grid[i, j] && !visited[i, j])
+                    {
+                        var cluster = new List<(int, int)>();
+                        var queue = new Queue<(int, int)>();
+                        queue.Enqueue((i, j));
+                        visited[i, j] = true;
+                        while (queue.Count > 0)
+                        {
+                            var (x, y) = queue.Dequeue();
+                            cluster.Add((x, y));
+                            for (int dx = -1; dx <= 1; dx++)
+                                for (int dy = -1; dy <= 1; dy++)
+                                {
+                                    if (dx == 0 && dy == 0) continue;
+                                    int nx = x + dx, ny = y + dy;
+                                    if (nx >= 0 && nx < Width && ny >= 0 && ny < Height &&
+                                        grid[nx, ny] && !visited[nx, ny])
+                                    {
+                                        visited[nx, ny] = true;
+                                        queue.Enqueue((nx, ny));
+                                    }
+                                }
+                        }
+                        clusters.Add(cluster);
+                    }
+                }
+            return clusters;
+        }
+        public static string ClassifyCluster(List<(int x, int y)> cluster)
+        {
+            if (cluster.Count == 0) return "Empty";
+            // Нормализация: сдвиг к (0,0)
+            int minX = cluster.Min(p => p.x);
+            int minY = cluster.Min(p => p.y);
+            var normalized = cluster.Select(p => (p.x - minX, p.y - minY)).OrderBy(p => p.Item1).ThenBy(p => p.Item2).ToList();
+
+            // Эталоны (относительные координаты)
+            var block = new HashSet<(int, int)> { (0,0),(0,1),(1,0),(1,1) };
+            var beehive = new HashSet<(int, int)> { (0,1),(0,2),(1,0),(1,3),(2,1),(2,2) };
+            var loaf = new HashSet<(int, int)> { (0,1),(0,2),(1,0),(1,3),(2,1),(2,3),(3,2) };
+            var blinkerH = new HashSet<(int, int)> { (0,0),(0,1),(0,2) };
+            var blinkerV = new HashSet<(int, int)> { (0,0),(1,0),(2,0) };
+            var glider = new HashSet<(int, int)> { (0,1),(1,2),(2,0),(2,1),(2,2) };
+            var boat = new HashSet<(int, int)> { (0,0),(0,1),(1,0),(1,2),(2,1) };
+
+            var set = new HashSet<(int, int)>(normalized);
+            if (set.SetEquals(block)) return "Block";
+            if (set.SetEquals(beehive)) return "Beehive";
+            if (set.SetEquals(loaf)) return "Loaf";
+            if (set.SetEquals(blinkerH) || set.SetEquals(blinkerV)) return "Blinker";
+            if (set.SetEquals(glider)) return "Glider";
+            if (set.SetEquals(boat)) return "Boat";
+            return "Unknown";
+        }
+        public (int generations, bool stabilized) SimulateUntilStable(int maxGenerations, int stableThreshold)
+        {
+            int lastCount = GetAliveCount();
+            int stableCounter = 0;
+            for (int gen = 0; gen < maxGenerations; gen++)
+            {
+                NextGeneration();
+                int newCount = GetAliveCount();
+                if (newCount == lastCount)
+                    stableCounter++;
+                else
+                    stableCounter = 0;
+                lastCount = newCount;
+                if (stableCounter >= stableThreshold)
+                    return (gen + 1, true);
+            }
+            return (maxGenerations, false);
         }
     }
-    class Program
+    public class Program
     {
-        static Board board;
-        static private void Reset()
+        public class Config
         {
-            board = new Board(
-                width: 50,
-                height: 20,
-                cellSize: 1,
-                liveDensity: 0.5);
+            public int BoardWidth { get; set; } = 100;
+            public int BoardHeight { get; set; } = 100;
+            public int SimulationDelayMs { get; set; } = 100;
+            public int StableThreshold { get; set; } = 10;
+            public int MaxGenerationsForStability { get; set; } = 1000;
+            public int ExperimentRepetitions { get; set; } = 50;
+            public double DensityStep { get; set; } = 0.1;
+            public string DataFolder { get; set; } = "Data";
         }
-        static void Render()
-        {
-            for (int row = 0; row < board.Rows; row++)
-            {
-                for (int col = 0; col < board.Columns; col++)   
-                {
-                    var cell = board.Cells[col, row];
-                    if (cell.IsAlive)
-                    {
-                        Console.Write('*');
-                    }
-                    else
-                    {
-                        Console.Write(' ');
-                    }
-                }
-                Console.Write('\n');
-            }
-        }
+
+        private static Config config;
+        private static Board board;
+
         static void Main(string[] args)
         {
-            Reset();
-            while(true)
+            LoadConfig();
+            Directory.CreateDirectory(config.DataFolder);
+
+            if (args.Length > 0)
+            {
+                switch (args[0].ToLower())
+                {
+                    case "run":
+                        if (args.Length > 1) RunSimulation(args[1]);
+                        else RunSimulation(null);
+                        break;
+                    case "experiment":
+                        RunExperiment();
+                        break;
+                    default:
+                        ShowMenu();
+                        break;
+                }
+            }
+            else
+                ShowMenu();
+        }
+
+        static void LoadConfig()
+        {
+            string configFile = "config.json";
+            if (File.Exists(configFile))
+            {
+                string json = File.ReadAllText(configFile);
+                config = JsonSerializer.Deserialize<Config>(json);
+            }
+            else
+            {
+                config = new Config();
+                string json = JsonSerializer.Serialize(config, new JsonSerializerOptions { WriteIndented = true });
+                File.WriteAllText(configFile, json);
+                Console.WriteLine("Создан файл конфигурации по умолчанию.");
+            }
+        }
+
+        static void ShowMenu()
+        {
+            while (true)
             {
                 Console.Clear();
-                Render();
-                board.Advance();
-                Thread.Sleep(1000);
+                Console.WriteLine("=== Игра Жизнь ===");
+                Console.WriteLine("1. Запустить симуляцию со случайным полем");
+                Console.WriteLine("2. Загрузить фигуру из файла");
+                Console.WriteLine("3. Сохранить текущее состояние");
+                Console.WriteLine("4. Провести эксперимент по стабилизации (график)");
+                Console.WriteLine("5. Классификация фигур на поле (кластеры)");
+                Console.WriteLine("6. Выход");
+                Console.Write("Выберите пункт: ");
+                string choice = Console.ReadLine();
+                switch (choice)
+                {
+                    case "1":
+                        RunSimulation(null);
+                        break;
+                    case "2":
+                        LoadFigure();
+                        break;
+                    case "3":
+                        SaveCurrentState();
+                        break;
+                    case "4":
+                        RunExperiment();
+                        break;
+                    case "5":
+                        ClassifyField();
+                        break;
+                    case "6":
+                        return;
+                    default:
+                        Console.WriteLine("Неверный ввод. Нажмите любую клавишу...");
+                        Console.ReadKey();
+                        break;
+                }
             }
+        }
+
+        static void RunSimulation(string stateFile)
+        {
+            board = new Board(config.BoardWidth, config.BoardHeight);
+            if (!string.IsNullOrEmpty(stateFile) && File.Exists(stateFile))
+                board.LoadFromFile(stateFile);
+            else
+                board.Randomize(0.3);
+            int generation = 0;
+            while (true)
+            {
+                Console.Clear();
+                DrawBoard();
+                Console.WriteLine($"Поколение: {generation} | Живых клеток: {board.GetAliveCount()}");
+                var key = Console.ReadKey(true);
+                if (key.Key == ConsoleKey.Escape) break;
+                if (key.Key == ConsoleKey.Space)
+                {
+                    board.NextGeneration();
+                    generation++;
+                }
+                else if (key.Key == ConsoleKey.S)
+                {
+                    SaveCurrentState();
+                }
+            }
+        }
+
+        static void DrawBoard()
+        {
+            int maxDisplayHeight = Math.Min(config.BoardHeight, 40);
+            int maxDisplayWidth = Math.Min(config.BoardWidth, 120);
+            for (int j = 0; j < maxDisplayHeight; j++)
+            {
+                for (int i = 0; i < maxDisplayWidth; i++)
+                    Console.Write(board.IsAlive(i, j) ? "█" : " ");
+                Console.WriteLine();
+            }
+        }
+
+        static void LoadFigure()
+        {
+            Console.Write("Введите имя файла (в папке Data): ");
+            string filename = Console.ReadLine();
+            string fullPath = Path.Combine(config.DataFolder, filename);
+            if (!File.Exists(fullPath))
+            {
+                Console.WriteLine("Файл не найден!");
+                Console.ReadKey();
+                return;
+            }
+            board = new Board(config.BoardWidth, config.BoardHeight);
+            board.LoadFromFile(fullPath);
+            Console.WriteLine("Фигура загружена. Нажмите любую клавишу для запуска симуляции...");
+            Console.ReadKey();
+            RunSimulation(fullPath);
+        }
+
+        static void SaveCurrentState()
+        {
+            if (board == null)
+            {
+                Console.WriteLine("Нет активного поля.");
+                Console.ReadKey();
+                return;
+            }
+            Console.Write("Имя файла для сохранения: ");
+            string filename = Console.ReadLine();
+            string fullPath = Path.Combine(config.DataFolder, filename);
+            board.SaveToFile(fullPath);
+            Console.WriteLine($"Сохранено в {fullPath}");
+            Console.ReadKey();
+        }
+
+        static void ClassifyField()
+        {
+            if (board == null)
+            {
+                Console.WriteLine("Сначала запустите симуляцию или загрузите фигуру.");
+                Console.ReadKey();
+                return;
+            }
+            var clusters = board.FindClusters();
+            Console.Clear();
+            Console.WriteLine($"Всего живых клеток: {board.GetAliveCount()}");
+            Console.WriteLine($"Всего кластеров (комбинаций): {clusters.Count}");
+            var classification = new Dictionary<string, int>();
+            foreach (var cluster in clusters)
+            {
+                string type = Board.ClassifyCluster(cluster);
+                if (!classification.ContainsKey(type))
+                    classification[type] = 0;
+                classification[type]++;
+            }
+            Console.WriteLine("Классификация:");
+            foreach (var kv in classification.OrderBy(k => k.Key))
+                Console.WriteLine($"  {kv.Key}: {kv.Value}");
+            Console.WriteLine("\nНажмите любую клавишу для возврата...");
+            Console.ReadKey();
+        }
+
+        static void RunExperiment()
+        {
+            Console.WriteLine("Запуск эксперимента по стабилизации...");
+            double minDensity = 0.05;
+            double maxDensity = 0.95;
+            double step = config.DensityStep;
+            int repetitions = config.ExperimentRepetitions;
+            var results = new List<(double density, double avgGenerations, double stdDev, int successCount)>();
+
+            var rand = new Random(42);
+            for (double density = minDensity; density <= maxDensity + 1e-6; density += step)
+            {
+                List<int> stableGens = new List<int>();
+                for (int rep = 0; rep < repetitions; rep++)
+                {
+                    board = new Board(config.BoardWidth, config.BoardHeight);
+                    board.Randomize(density, rand);
+                    var (gens, stabilized) = board.SimulateUntilStable(config.MaxGenerationsForStability, config.StableThreshold);
+                    if (stabilized)
+                        stableGens.Add(gens);
+                }
+                double avg = stableGens.Count > 0 ? stableGens.Average() : 0;
+                double std = stableGens.Count > 1 ? Math.Sqrt(stableGens.Select(v => (v - avg) * (v - avg)).Sum() / (stableGens.Count - 1)) : 0;
+                results.Add((density, avg, std, stableGens.Count));
+                Console.WriteLine($"Плотность {density:F2}: успешных {stableGens.Count}/{repetitions}, среднее поколений = {avg:F2}");
+            }
+
+            // Сохраняем данные в data.txt
+            string dataPath = Path.Combine(config.DataFolder, "data.txt");
+            using (var writer = new StreamWriter(dataPath))
+            {
+                writer.WriteLine("density\tavg_generations\tstd_dev\tsuccess_count");
+                foreach (var r in results)
+                    writer.WriteLine($"{r.density:F3}\t{r.avgGenerations:F2}\t{r.stdDev:F2}\t{r.successCount}");
+            }
+            Console.WriteLine($"Данные сохранены в {dataPath}");
+            var plt = new Plot();
+            double[] xs = results.Select(r => r.density).ToArray();
+            double[] ys = results.Select(r => r.avgGenerations).ToArray();
+            plt.Add.Scatter(xs, ys);
+            plt.Title("Переход в стабильную фазу");
+            plt.XLabel("Плотность заполнения");
+            plt.YLabel("Среднее число поколений до стабилизации");
+            string plotPath = Path.Combine(config.DataFolder, "plot.png");
+            plt.SavePng(plotPath, 800, 600);
+            Console.WriteLine($"График сохранён в {plotPath}");
+            Console.WriteLine("Нажмите любую клавишу для выхода...");
+            Console.ReadKey();
         }
     }
 }
