@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "vkP1qilLgmY=",
+  "dgSpecHash": "YZHSDfKsXB0=",
   "success": true,
   "projectFilePath": "C:\\Users\\Владислав\\Desktop\\програм\\Информационные системы\\mod-lab05-life\\Life.Tests\\Life.Tests.csproj",
   "expectedPackageFiles": [
@@ -30,10 +30,10 @@
       "code": "NU1701",
       "level": "Warning",
       "warningLevel": 1,
-      "message": "Package 'xunit 1.7.0.1540' was restored using '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8, .NETFramework,Version=v4.8.1' instead of the project target framework 'net9.0'. This package may not be fully compatible with your project.",
+      "message": "Package 'xunit 1.7.0.1540' was restored using '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8, .NETFramework,Version=v4.8.1' instead of the project target framework 'net8.0'. This package may not be fully compatible with your project.",
       "libraryId": "xunit",
       "targetGraphs": [
-        "net9.0"
+        "net8.0"
       ]
     }
   ]

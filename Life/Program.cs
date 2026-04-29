@@ -457,29 +457,19 @@ static void GeneratePlot(double[] xValues, double[] yValues, string filePath)
         canvas.RotateDegrees(-90);
         canvas.DrawText("Avg Generations to Stability", -height / 2, 30, axisLabelPaint);
         canvas.Restore();
-
-        // Отступы (левый можно уменьшить, т.к. ось теперь от 0, а метка 0.1 сдвинута)
         float marginLeft = 80, marginRight = 40, marginTop = 80, marginBottom = 80;
         float plotLeft = marginLeft, plotRight = width - marginRight;
         float plotTop = marginTop, plotBottom = height - marginBottom;
-
-        // ---------- ВАЖНОЕ ИЗМЕНЕНИЕ: начинаем ось X не с 0.1, а с 0.0 ----------
-        float xAxisMin = 0.0f, xAxisMax = 0.9f; // теперь между осью Y и 0.1 появится отступ
+        float xAxisMin = 0.0f, xAxisMax = 0.9f; 
         float xScale = (plotRight - plotLeft) / (xAxisMax - xAxisMin);
-
-        // Границы по Y – автоматически с шагом 50
         float yMax = (float)yValues.Max();
         if (yMax == 0) yMax = 1;
         float yAxisMax = (float)(Math.Ceiling(yMax / 50.0) * 50);
         if (yAxisMax < 50) yAxisMax = 50;
         float yScale = (plotBottom - plotTop) / yAxisMax;
-
-        // Оси
         var axisPaint = new SKPaint { Color = SKColors.Black, StrokeWidth = 2, Style = SKPaintStyle.Stroke, IsAntialias = true };
-        canvas.DrawLine(plotLeft, plotBottom, plotRight, plotBottom, axisPaint); // X
-        canvas.DrawLine(plotLeft, plotTop, plotLeft, plotBottom, axisPaint);    // Y
-
-        // Метки по X – теперь начинаем прорисовку с 0.1 (0.0 не рисуем)
+        canvas.DrawLine(plotLeft, plotBottom, plotRight, plotBottom, axisPaint); 
+        canvas.DrawLine(plotLeft, plotTop, plotLeft, plotBottom, axisPaint);    
         var tickPaint = new SKPaint { Color = SKColors.Black, StrokeWidth = 1, Style = SKPaintStyle.Stroke, IsAntialias = true };
         var labelTickPaint = new SKPaint { Color = SKColors.Black, TextSize = 16, IsAntialias = true, TextAlign = SKTextAlign.Center };
 
@@ -498,8 +488,6 @@ static void GeneratePlot(double[] xValues, double[] yValues, string filePath)
             canvas.DrawLine(plotLeft - 5, y, plotLeft, y, tickPaint);
             canvas.DrawText(val.ToString("F0"), plotLeft - 10, y + 6, rightAlignPaint);
         }
-
-        // Линия графика
         var linePaint = new SKPaint { Color = SKColors.Blue, StrokeWidth = 3, IsAntialias = true, Style = SKPaintStyle.Stroke };
         for (int i = 0; i < xValues.Length - 1; i++)
         {
