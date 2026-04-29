@@ -1,19 +1,19 @@
 {
   "version": 2,
-  "dgSpecHash": "xwWqZ48EocU=",
+  "dgSpecHash": "MQ3AuYcnB38=",
   "success": true,
   "projectFilePath": "C:\\Users\\Владислав\\Desktop\\програм\\Информационные системы\\mod-lab05-life\\Life\\Life.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\Владислав\\.nuget\\packages\\harfbuzzsharp\\8.3.1.1\\harfbuzzsharp.8.3.1.1.nupkg.sha512",
-    "C:\\Users\\Владислав\\.nuget\\packages\\harfbuzzsharp.nativeassets.linux\\8.3.1.1\\harfbuzzsharp.nativeassets.linux.8.3.1.1.nupkg.sha512",
-    "C:\\Users\\Владислав\\.nuget\\packages\\harfbuzzsharp.nativeassets.macos\\8.3.1.1\\harfbuzzsharp.nativeassets.macos.8.3.1.1.nupkg.sha512",
-    "C:\\Users\\Владислав\\.nuget\\packages\\harfbuzzsharp.nativeassets.win32\\8.3.1.1\\harfbuzzsharp.nativeassets.win32.8.3.1.1.nupkg.sha512",
-    "C:\\Users\\Владислав\\.nuget\\packages\\scottplot\\5.1.58\\scottplot.5.1.58.nupkg.sha512",
-    "C:\\Users\\Владислав\\.nuget\\packages\\skiasharp\\3.119.0\\skiasharp.3.119.0.nupkg.sha512",
-    "C:\\Users\\Владислав\\.nuget\\packages\\skiasharp.harfbuzz\\3.119.0\\skiasharp.harfbuzz.3.119.0.nupkg.sha512",
-    "C:\\Users\\Владислав\\.nuget\\packages\\skiasharp.nativeassets.linux.nodependencies\\3.119.0\\skiasharp.nativeassets.linux.nodependencies.3.119.0.nupkg.sha512",
-    "C:\\Users\\Владислав\\.nuget\\packages\\skiasharp.nativeassets.macos\\3.119.0\\skiasharp.nativeassets.macos.3.119.0.nupkg.sha512",
-    "C:\\Users\\Владислав\\.nuget\\packages\\skiasharp.nativeassets.win32\\3.119.0\\skiasharp.nativeassets.win32.3.119.0.nupkg.sha512"
+    "C:\\Users\\Владислав\\.nuget\\packages\\amazon.lambda.core\\2.8.0\\amazon.lambda.core.2.8.0.nupkg.sha512",
+    "C:\\Users\\Владислав\\.nuget\\packages\\amazon.lambda.serialization.systemtextjson\\2.4.5\\amazon.lambda.serialization.systemtextjson.2.4.5.nupkg.sha512",
+    "C:\\Users\\Владислав\\.nuget\\packages\\microsoft.netcore.platforms\\3.1.4\\microsoft.netcore.platforms.3.1.4.nupkg.sha512",
+    "C:\\Users\\Владислав\\.nuget\\packages\\microsoft.win32.systemevents\\4.7.0\\microsoft.win32.systemevents.4.7.0.nupkg.sha512",
+    "C:\\Users\\Владислав\\.nuget\\packages\\scottplot\\4.1.70\\scottplot.4.1.70.nupkg.sha512",
+    "C:\\Users\\Владислав\\.nuget\\packages\\skiasharp\\3.119.2\\skiasharp.3.119.2.nupkg.sha512",
+    "C:\\Users\\Владислав\\.nuget\\packages\\skiasharp.nativeassets.macos\\3.119.2\\skiasharp.nativeassets.macos.3.119.2.nupkg.sha512",
+    "C:\\Users\\Владислав\\.nuget\\packages\\skiasharp.nativeassets.win32\\3.119.2\\skiasharp.nativeassets.win32.3.119.2.nupkg.sha512",
+    "C:\\Users\\Владислав\\.nuget\\packages\\system.drawing.common\\4.7.2\\system.drawing.common.4.7.2.nupkg.sha512",
+    "C:\\Users\\Владислав\\.nuget\\packages\\system.numerics.vectors\\4.5.0\\system.numerics.vectors.4.5.0.nupkg.sha512"
   ],
   "logs": []
 }

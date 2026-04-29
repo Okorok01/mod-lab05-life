@@ -1,0 +1,10 @@
+{
+  "Width": 50,
+  "Height": 50,
+  "InitialDensity": 0.3,
+  "MaxGenerations": 1000,
+  "StablePeriod": 10,
+  "Rule": "B3/S23",
+  "SaveFile": "state.txt",
+  "LoadFile": "state.txt"
+}
