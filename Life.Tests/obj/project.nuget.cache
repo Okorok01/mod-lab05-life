@@ -1,40 +1,33 @@
 {
   "version": 2,
-  "dgSpecHash": "YZHSDfKsXB0=",
+  "dgSpecHash": "g8Y1IJ97rZc=",
   "success": true,
   "projectFilePath": "C:\\Users\\Владислав\\Desktop\\програм\\Информационные системы\\mod-lab05-life\\Life.Tests\\Life.Tests.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Владислав\\.nuget\\packages\\amazon.lambda.core\\2.8.0\\amazon.lambda.core.2.8.0.nupkg.sha512",
     "C:\\Users\\Владислав\\.nuget\\packages\\amazon.lambda.serialization.systemtextjson\\2.4.5\\amazon.lambda.serialization.systemtextjson.2.4.5.nupkg.sha512",
-    "C:\\Users\\Владислав\\.nuget\\packages\\coverlet.collector\\6.0.2\\coverlet.collector.6.0.2.nupkg.sha512",
-    "C:\\Users\\Владислав\\.nuget\\packages\\microsoft.codecoverage\\18.5.1\\microsoft.codecoverage.18.5.1.nupkg.sha512",
-    "C:\\Users\\Владислав\\.nuget\\packages\\microsoft.net.test.sdk\\18.5.1\\microsoft.net.test.sdk.18.5.1.nupkg.sha512",
+    "C:\\Users\\Владислав\\.nuget\\packages\\microsoft.codecoverage\\17.11.1\\microsoft.codecoverage.17.11.1.nupkg.sha512",
+    "C:\\Users\\Владислав\\.nuget\\packages\\microsoft.net.test.sdk\\17.11.1\\microsoft.net.test.sdk.17.11.1.nupkg.sha512",
     "C:\\Users\\Владислав\\.nuget\\packages\\microsoft.netcore.platforms\\3.1.4\\microsoft.netcore.platforms.3.1.4.nupkg.sha512",
-    "C:\\Users\\Владислав\\.nuget\\packages\\microsoft.testplatform.objectmodel\\18.5.1\\microsoft.testplatform.objectmodel.18.5.1.nupkg.sha512",
-    "C:\\Users\\Владислав\\.nuget\\packages\\microsoft.testplatform.testhost\\18.5.1\\microsoft.testplatform.testhost.18.5.1.nupkg.sha512",
+    "C:\\Users\\Владислав\\.nuget\\packages\\microsoft.testplatform.objectmodel\\17.11.1\\microsoft.testplatform.objectmodel.17.11.1.nupkg.sha512",
+    "C:\\Users\\Владислав\\.nuget\\packages\\microsoft.testplatform.testhost\\17.11.1\\microsoft.testplatform.testhost.17.11.1.nupkg.sha512",
     "C:\\Users\\Владислав\\.nuget\\packages\\microsoft.win32.systemevents\\4.7.0\\microsoft.win32.systemevents.4.7.0.nupkg.sha512",
-    "C:\\Users\\Владислав\\.nuget\\packages\\newtonsoft.json\\13.0.3\\newtonsoft.json.13.0.3.nupkg.sha512",
+    "C:\\Users\\Владислав\\.nuget\\packages\\newtonsoft.json\\13.0.1\\newtonsoft.json.13.0.1.nupkg.sha512",
     "C:\\Users\\Владислав\\.nuget\\packages\\scottplot\\4.1.70\\scottplot.4.1.70.nupkg.sha512",
     "C:\\Users\\Владислав\\.nuget\\packages\\skiasharp\\3.119.2\\skiasharp.3.119.2.nupkg.sha512",
     "C:\\Users\\Владислав\\.nuget\\packages\\skiasharp.nativeassets.macos\\3.119.2\\skiasharp.nativeassets.macos.3.119.2.nupkg.sha512",
     "C:\\Users\\Владислав\\.nuget\\packages\\skiasharp.nativeassets.win32\\3.119.2\\skiasharp.nativeassets.win32.3.119.2.nupkg.sha512",
-    "C:\\Users\\Владислав\\.nuget\\packages\\system.collections.immutable\\8.0.0\\system.collections.immutable.8.0.0.nupkg.sha512",
     "C:\\Users\\Владислав\\.nuget\\packages\\system.drawing.common\\4.7.2\\system.drawing.common.4.7.2.nupkg.sha512",
     "C:\\Users\\Владислав\\.nuget\\packages\\system.numerics.vectors\\4.5.0\\system.numerics.vectors.4.5.0.nupkg.sha512",
-    "C:\\Users\\Владислав\\.nuget\\packages\\system.reflection.metadata\\8.0.0\\system.reflection.metadata.8.0.0.nupkg.sha512",
-    "C:\\Users\\Владислав\\.nuget\\packages\\xunit\\1.7.0.1540\\xunit.1.7.0.1540.nupkg.sha512",
-    "C:\\Users\\Владислав\\.nuget\\packages\\xunit.runner.visualstudio\\3.1.5\\xunit.runner.visualstudio.3.1.5.nupkg.sha512"
+    "C:\\Users\\Владислав\\.nuget\\packages\\system.reflection.metadata\\1.6.0\\system.reflection.metadata.1.6.0.nupkg.sha512",
+    "C:\\Users\\Владислав\\.nuget\\packages\\xunit\\2.9.2\\xunit.2.9.2.nupkg.sha512",
+    "C:\\Users\\Владислав\\.nuget\\packages\\xunit.abstractions\\2.0.3\\xunit.abstractions.2.0.3.nupkg.sha512",
+    "C:\\Users\\Владислав\\.nuget\\packages\\xunit.analyzers\\1.16.0\\xunit.analyzers.1.16.0.nupkg.sha512",
+    "C:\\Users\\Владислав\\.nuget\\packages\\xunit.assert\\2.9.2\\xunit.assert.2.9.2.nupkg.sha512",
+    "C:\\Users\\Владислав\\.nuget\\packages\\xunit.core\\2.9.2\\xunit.core.2.9.2.nupkg.sha512",
+    "C:\\Users\\Владислав\\.nuget\\packages\\xunit.extensibility.core\\2.9.2\\xunit.extensibility.core.2.9.2.nupkg.sha512",
+    "C:\\Users\\Владислав\\.nuget\\packages\\xunit.extensibility.execution\\2.9.2\\xunit.extensibility.execution.2.9.2.nupkg.sha512",
+    "C:\\Users\\Владислав\\.nuget\\packages\\xunit.runner.visualstudio\\2.8.2\\xunit.runner.visualstudio.2.8.2.nupkg.sha512"
   ],
-  "logs": [
-    {
-      "code": "NU1701",
-      "level": "Warning",
-      "warningLevel": 1,
-      "message": "Package 'xunit 1.7.0.1540' was restored using '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8, .NETFramework,Version=v4.8.1' instead of the project target framework 'net8.0'. This package may not be fully compatible with your project.",
-      "libraryId": "xunit",
-      "targetGraphs": [
-        "net8.0"
-      ]
-    }
-  ]
+  "logs": []
 }
